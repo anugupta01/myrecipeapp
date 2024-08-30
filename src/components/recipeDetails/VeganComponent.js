@@ -1,29 +1,32 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "./Vegan.css"; // Import your CSS file for styling
+import { fetchVeganRecipes } from "../service/recipeService";
+import "./Vegan.css";
+import { useNavigate } from "react-router-dom";
+import Button from "../CommonUI/Button";
 
 const Vegan = () => {
+  const navigate = useNavigate();
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const APP_ID = "a52b4d43";
-  const APP_KEY = "e0e5c667605f5e91d8275c97353b80a";
-  useEffect(() => {
-    const fetchRecipes = async (searchString) => {
-      try {
-        const response = await axios.get(
-          `https://api.edamam.com/search?q=${searchString}&app_id=${APP_ID}&app_key=${APP_KEY}`
-        ); // Replace with your API endpoint
+  const back = () => {
+    navigate("/dashboard");
+  };
 
-        setRecipes(response.data);
-      } catch (err) {
-        setError("Failed to fetch recipes");
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const recipeData = await fetchVeganRecipes();
+        setRecipes(recipeData);
+      } catch (error) {
+        setError("Failed to fetch recipes. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchRecipes();
+    
   }, []);
 
   if (loading) return <p>Loading...</p>;
@@ -32,15 +35,27 @@ const Vegan = () => {
   return (
     <div className="vegan-recipes">
       <h1>Vegan Recipes</h1>
+      <Button className="btn btn-back" onClickCapture={back}>Back</Button>
       <div className="recipe-list">
-        {recipes.length > 0 ? (
-          recipes.map((recipe) => (
-            <div key={recipe.id} className="recipe-card">
-              <h2>{recipe.name}</h2>
-              <p>{recipe.description}</p>
-              <img src={recipe.image} alt={recipe.name} />
-            </div>
-          ))
+      {recipes.length > 0 ? (
+          recipes.map((item) => {
+            const recipe = item.recipe;
+            return (
+              <div key={recipe.uri} className="recipe-card">
+                <h2>{recipe.label}</h2>
+                <p>{recipe.source}</p>
+                <img src={recipe.image} alt={recipe.label} />
+                <div className="recipe-details">
+                  <h3>Ingredients:</h3>
+                  <ul>
+                    {recipe.ingredientLines.map((line, index) => (
+                      <li key={index}>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            );
+          })
         ) : (
           <p>No vegan recipes found.</p>
         )}

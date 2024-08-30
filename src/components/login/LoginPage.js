@@ -1,132 +1,170 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Dialog, DialogTitle, DialogActions } from '@mui/material';
+import { login, fetchUsers } from '../service/authService';
 import "./LoginPage.css";
 import Input from "../CommonUI/Input";
 import Button from "../CommonUI/Button";
-import Alert from "@mui/material/lab/Alert";
-import AlertTitle from "@mui/material/lab/AlertTitle";
 
 const LoginPage = () => {
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [errorMessage, setErrorMessage] = useState(null); // New state for handling error messages
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState('');
   const navigate = useNavigate();
 
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-  const Registration = () => {
-    navigate("/registration");
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const validateField = (name, value) => {
+    const newErrors = { ...errors };
+    switch (name) {
+      case "email":
+        newErrors.email = validateEmail(value) ? "" : "Invalid email address";
+        break;
+      case "password":
+        newErrors.password = validatePassword(value) ? "" : "Password must be at least 8 characters long and contain both letters and numbers";
+        break;
+      default:
+        break;
+    }
+    setErrors(newErrors);
   };
 
   const handleChange = (e) => {
-    const value = e.target.value;
-    setData({
-      ...data,
-      [e.target.name]: value,
-    });
+    const { name, value } = e.target;
+    if (name === 'email') {
+      setEmail(value);
+    } else if (name === 'password') {
+      setPassword(value);
+    }
+    validateField(name, value);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    validateField(name, value);
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     const errorMessage = {};
-
-    if (!data.email) errorMessage.email = "Email is required";
-    setErrors(errorMessage);
-
-    if (!data.password) {
+    if (!email) errorMessage.email = "Email is required";
+    if (!password) {
       errorMessage.password = "Password is required";
-    } else if (!passwordRegex.test(data.password)) {
-      errorMessage.password =
-        "Password must be at least 8 characters long and can contain alphabets and numerics";
     }
 
-    await axios.post("http://localhost:3030/users", data).then((response) => {
-      const userArray = [response.data];
-      console.log("userArray", userArray);
-      setData([response.data]);
-
-      const email = userArray.some((response) => response.email === data.email);
-      const password = userArray.some(
-        (response) => response.password === data.password
-      );
-
-      if (!email)
-        errorMessage.email =
-          "Email id is not reggistered.Please register yourself";
+    if (Object.keys(errorMessage).length > 0) {
       setErrors(errorMessage);
+      return;
+    }
 
-      if (!password) {
-        errorMessage.password = "Invalid Password";
-      }
+    setErrors({});
 
-      localStorage.setItem("user", JSON.stringify(data));
-      if (response.data != null && data) {
-        <Alert severity="success">
-          <AlertTitle>Success</AlertTitle>
-          This is a success Alert with an encouraging title.
-        </Alert>
-        navigate("/dashboard");
-      } else if (
-        data.email === false &&
-        data.password === false &&
-        email === null &&
-        password === null &&
-        email === false &&
-        password === false
-      ) {
-        <Alert severity="error">
-  <AlertTitle>Error</AlertTitle>
-  This is an error Alert with a scary title.
-</Alert>
-        navigate("/");
+    if (loading) return;
+
+    setLoading(true);
+
+    try {
+      const { token } = await login(email, password);
+
+      localStorage.setItem('authToken', token);
+      const users = await fetchUsers();
+      const user = users.find(user => user.email === email);
+      const userData = email;
+
+      if (user) {
+        if (user.password !== password) {
+          setErrors({ password: "Invalid Password" });
+          return;
+        } 
+         
+        setDialogType('success');
+        localStorage.setItem('user', userData);
+        navigate('/dashboard');
+      } else {
+        setDialogType('error');
+        setDialogOpen(true);
       }
-    });
-    setData("");
+    } catch (err) {
+      setDialogType('error');
+      setDialogOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegistration = () => {
+    navigate("/registration");
   };
 
   return (
     <div className="login-page">
       <h2>Login Page</h2>
-      <form>
+      <form onSubmit={handleLogin}>
         <div>
-          <label>Email : </label>
+          <label>Email: </label>
           <Input
             type="email"
             name="email"
-            value={data.email}
+            value={email}
             onChange={handleChange}
-            error={errors.email}
+            onBlur={handleBlur}
           />
+          {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
         </div>
         <div>
-          <label>Password : </label>
+          <label>Password: </label>
           <Input
-            id="password"
             type="password"
             name="password"
-            value={data.password}
+            value={password}
             onChange={handleChange}
-            error={errors.password}
-            required
+            onBlur={handleBlur}
           />
+          {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
         </div>
-        <Button variant="primary" type="submit" onClick={handleLogin}>
-          Log In
+       
+        <Button type="submit" variant="primary" disabled={loading}>
+          {loading ? 'Logging in...' : 'Log In'}
         </Button>
         <Button
+          type="button"
           variant="secondary"
           className="btn button-secondary"
-          type="submit"
-          onClick={Registration}
+          onClick={handleRegistration}
         >
           Register
         </Button>
-        {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}{" "}
+        <Dialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        aria-labelledby="dialog-title"
+        aria-describedby="dialog-description"
+      >
+        <DialogTitle id="dialog-title">
+          {dialogType === 'success' ? 'Login Successful !!' : 'Login failed. Please check your credentials and try again.'}
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       </form>
     </div>
   );
