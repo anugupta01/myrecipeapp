@@ -1,4 +1,4 @@
-# app-main
+# myrecipeapp
 
 This is proof of work for [geektrust](https://www.geektrust.com/challenge/admin-ui)
 
