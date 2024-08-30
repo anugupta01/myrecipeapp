@@ -1,6 +1,6 @@
 # myrecipeapp
 
-This is proof of work for [geektrust](https://www.geektrust.com/challenge/admin-ui)
+This is proof of work for [recipe website]()
 
 
 ## **Install and Run Locally**
