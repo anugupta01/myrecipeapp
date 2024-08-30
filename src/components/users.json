@@ -7,32 +7,16 @@
       "email": "anu.gupta@gmail.com",
       "password": "Anu123456",
       "confirmPassword": "Anu12345",
-      "foodInterest": "Vegan Options."
+      "foodInterest": "Keto Options."
     },
     {
-      "id": "f1eb",
-      "email": "",
-      "password": ""
-    },
-    {
-      "id": "49aa",
-      "email": "",
-      "password": ""
-    },
-    {
-      "id": "21b2",
-      "email": "",
-      "password": ""
-    },
-    {
-      "id": "143f",
-      "email": "",
-      "password": ""
-    },
-    {
-      "id": "6c85",
-      "email": "",
-      "password": ""
+      "id": "f9f6",
+      "firstName": "Akash",
+      "lastName": "Gupta",
+      "email": "ak@gmail.com",
+      "password": "Anu12345",
+      "confirmPassword": "Anu12345",
+      "foodInterest": "Paleo Options."
     }
   ]
 }

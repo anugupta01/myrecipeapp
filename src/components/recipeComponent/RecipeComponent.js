@@ -52,7 +52,7 @@ const SeeNewTab = styled(SeeMoreText)`
     return (
       <RecipeContainer>
         <Dialog
-          onClose={() => console.log("adsadad")}
+          onClose={() => console.log("anu")}
           aria-labelledby="simple-dialog-title"
           open={!!show}
         >

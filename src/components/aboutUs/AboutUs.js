@@ -1,5 +1,7 @@
 import React from "react";
-
+import categoryImage from '../assets/jane.jpg';
+import categoryImage2 from '../assets/john.jpg';
+import "./AboutUs.css";
 const AboutUs = () => {
   return (
     <>
@@ -22,17 +24,19 @@ const AboutUs = () => {
           the kitchen, we have something for you!
         </p>
         <h2>Meet Our Team</h2>
+        <div className="team-container">
         <div className="team-member">
-          <img src="/images/team/jane.jpg" alt="Jane Doe" className="team-photo" />
-          <h3>Jane Doe</h3>
-          <p>Co-Founder & Chef</p>
+          <img src={categoryImage} alt="Jane Doe" className="team-photo" />
+          <h3 className="title">Jane Doe</h3>
+          <p className="subtitle">Co-Founder & Chef</p>
           <p>Jane is the culinary mastermind behind many of our favorite recipes. With years of experience in the kitchen, she loves creating dishes that are both delicious and approachable.</p>
         </div>
         <div className="team-member">
-          <img src="/images/team/john.jpg" alt="John Smith" className="team-photo" />
+          <img src={categoryImage2} alt="John Smith" className="team-photo" />
           <h3>John Smith</h3>
           <p>Co-Founder & Tech Lead</p>
           <p>John is the tech guru who brings our recipe app to life. With a background in software development, he ensures that RecipeApp runs smoothly and is always improving.</p>
+        </div>
         </div>
         <h2>Our Mission</h2>
         <p>

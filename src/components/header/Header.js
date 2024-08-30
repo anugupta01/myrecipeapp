@@ -9,6 +9,7 @@ const Header = () => {
 
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("authToken");
     setIsLoggedin(false);
     navigate("/");
   };
@@ -16,7 +17,7 @@ const Header = () => {
   return (
     <div className="header">
       <p className="header-heading link">Recipe App</p>
-      <nav role="navigation"> 
+      <nav role="navigation" className="navigation"> 
         <span className="spaces">|</span>
         <Link className="heading-home" to="/dashboard">
          Home

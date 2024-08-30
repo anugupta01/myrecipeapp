@@ -20,9 +20,9 @@
 }
 
 .sidebar-toggle {
-    position: fixed;
-    top: 7px;
-    left: 18px;
+    position: relative;
+    top: -71px;
+    right: 592px;
     padding: 10px 20px;
     background-color: black;
     color: white;
