@@ -22,7 +22,6 @@ const fetchRecipes = async (query) => {
     });
 
     return response.data.hits || [];
-    console.log("res",response.data.hits)
   } catch (error) {
     console.error(
       `Failed to fetch ${query} recipes:`,
