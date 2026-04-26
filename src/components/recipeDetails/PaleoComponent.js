@@ -9,12 +9,15 @@ const PaleoComponent = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [filterType, setFilterType] = useState("all");
+
   const back = () => {
     navigate("/dashboard");
   };
 
   useEffect(() => {
-    const fetchRecipes = async () => {
+    const getRecipes = async () => {
       try {
         const recipeData = await fetchPaleoRecipes();
         setRecipes(recipeData);
@@ -24,21 +27,66 @@ const PaleoComponent = () => {
         setLoading(false);
       }
     };
-    fetchRecipes();
+
+    getRecipes();
   }, []);
+
+  const filteredRecipes = recipes.filter((item) => {
+    const recipe = item.recipe;
+
+    const searchValue = searchText.toLowerCase();
+
+    const matchesSearch =
+      recipe.label.toLowerCase().includes(searchValue) ||
+      recipe.source.toLowerCase().includes(searchValue) ||
+      recipe.ingredientLines.some((ingredient) =>
+        ingredient.toLowerCase().includes(searchValue)
+      );
+
+    let matchesFilter = true;
+
+    if (filterType === "low-calorie") {
+      matchesFilter = recipe.calories < 500;
+    } else if (filterType === "high-protein") {
+      matchesFilter = recipe.totalNutrients?.PROCNT?.quantity > 20;
+    } else if (filterType === "quick") {
+      matchesFilter = recipe.totalTime > 0 && recipe.totalTime <= 30;
+    }
+
+    return matchesSearch && matchesFilter;
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
-
- 
 
   return (
     <div className="vegan-recipes">
       <h1>Paleo Recipes</h1>
       <Button className="btn btn-back" onClickCapture={back}>Back</Button>
+      <div className="search-filter-container">
+        <input
+          type="text"
+          placeholder="Search by recipe, source, or ingredient..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          className="search-input"
+        />
+
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          className="filter-select"
+        >
+          <option value="all">All Recipes</option>
+          <option value="low-calorie">Low Calorie</option>
+          <option value="high-protein">High Protein</option>
+          <option value="quick">Quick Recipes</option>
+        </select>
+      </div>
+
       <div className="recipe-list">
-      {recipes.length > 0 ? (
-          recipes.map((item) => {
+        {filteredRecipes.length > 0 ? (
+          filteredRecipes.map((item) => {
             const recipe = item.recipe;
             return (
               <div key={recipe.uri} className="recipe-card">
@@ -57,8 +105,8 @@ const PaleoComponent = () => {
             );
           })
         ) : (
-          <p>No paleo recipes found.</p>
-        )}      
+          <p>No matching paleo recipes found.</p>
+        )}
       </div>
     </div>
   );

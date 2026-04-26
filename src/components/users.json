@@ -5,7 +5,7 @@
       "firstName": "Anu",
       "lastName": "Gupta",
       "email": "anu.gupta@gmail.com",
-      "password": "Anu123456",
+      "password": "Anu12345",
       "confirmPassword": "Anu12345",
       "foodInterest": "Keto Options."
     },
@@ -17,6 +17,16 @@
       "password": "Anu12345",
       "confirmPassword": "Anu12345",
       "foodInterest": "Paleo Options."
+    },
+    {
+      "id": "oScmhqqSnrs",
+      "firstName": "AKASH",
+      "lastName": "GUPTA",
+      "email": "akash@gmail.com",
+      "password": "Anu12340",
+      "confirmPassword": "Anu12340",
+      "foodInterest": "Vegan Options."
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
