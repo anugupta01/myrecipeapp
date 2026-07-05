@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogActions from "@mui/material/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
 import assets from '../assets/Veg.webp';
 
 const RecipeComponent = (props) => {
@@ -52,6 +52,7 @@ const SeeNewTab = styled(SeeMoreText)`
     return (
       <RecipeContainer>
         <Dialog
+          onClose={() => console.log("anu")}
           aria-labelledby="simple-dialog-title"
           open={!!show}
         >

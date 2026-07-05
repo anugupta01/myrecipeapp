@@ -32,7 +32,9 @@ const LoginPage = () => {
         newErrors.email = validateEmail(value) ? "" : "Invalid email address";
         break;
       case "password":
-        newErrors.password = validatePassword(value) ? "" : "Password must be at least 8 characters long and contain both letters and numbers";
+        newErrors.password = validatePassword(value)
+          ? ""
+          : "Password must be at least 8 characters long and contain both letters and numbers";
         break;
       default:
         break;
@@ -64,9 +66,7 @@ const LoginPage = () => {
 
     const errorMessage = {};
     if (!email) errorMessage.email = "Email is required";
-    if (!password) {
-      errorMessage.password = "Password is required";
-    }
+    if (!password) errorMessage.password = "Password is required";
 
     if (Object.keys(errorMessage).length > 0) {
       setErrors(errorMessage);
@@ -74,33 +74,37 @@ const LoginPage = () => {
     }
 
     setErrors({});
-
     if (loading) return;
-
     setLoading(true);
 
     try {
-      const { token } = await login(email, password);
+      // 1. Authenticate against the :5000 backend
+      const response = await login(email, password);
+      const token = response?.token;
+
+      if (!token) {
+        // Backend responded but gave no token -> treat as failed login
+        setDialogType('error');
+        setDialogOpen(true);
+        return;
+      }
 
       localStorage.setItem('authToken', token);
+
+      // 2. Load users from :3030 to confirm the record exists / get profile data
       const users = await fetchUsers();
-      const user = users.find(user => user.email === email);
-      const userData = email;
+      const user = users.find((u) => u.email === email);
 
       if (user) {
-        if (user.password !== password) {
-          setErrors({ password: "Invalid Password" });
-          return;
-        } 
-         
-        setDialogType('success');
-        localStorage.setItem('user', userData);
+        localStorage.setItem('user', email);
         navigate('/dashboard');
       } else {
+        // Authenticated by backend but no matching user record found
         setDialogType('error');
         setDialogOpen(true);
       }
     } catch (err) {
+      console.error('Login error:', err);
       setDialogType('error');
       setDialogOpen(true);
     } finally {
@@ -138,7 +142,7 @@ const LoginPage = () => {
           />
           {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
         </div>
-       
+
         <Button type="submit" variant="primary" disabled={loading}>
           {loading ? 'Logging in...' : 'Log In'}
         </Button>
@@ -150,21 +154,24 @@ const LoginPage = () => {
         >
           Register
         </Button>
+
         <Dialog
-        open={dialogOpen}
-        onClose={handleCloseDialog}
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-description"
-      >
-        <DialogTitle id="dialog-title">
-          {dialogType === 'success' ? 'Login Successful !!' : 'Login failed. Please check your credentials and try again.'}
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+          open={dialogOpen}
+          onClose={handleCloseDialog}
+          aria-labelledby="dialog-title"
+          aria-describedby="dialog-description"
+        >
+          <DialogTitle id="dialog-title">
+            {dialogType === 'success'
+              ? 'Login Successful !!'
+              : 'Login failed. Please check your credentials and try again.'}
+          </DialogTitle>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </form>
     </div>
   );

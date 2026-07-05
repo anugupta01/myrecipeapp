@@ -29,7 +29,7 @@ const RegistrationForm = () => {
     confirmPassword: "",
     foodInterest: "",
   });
-
+  
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState('');
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ const RegistrationForm = () => {
       case "password":
         newErrors.password = validatePassword(value) ? "" : "Password must be at least 8 characters long and contain both letters and numbers";
         break;
-      case "confirmPassword":
+        case "confirmPassword":
         newErrors.confirmPassword = value === formData.password ? "" : "Passwords do not match";
         newErrors.confirmPassword = value.trim() ? "" : "Confirm Password is required";
         break;
@@ -69,7 +69,7 @@ const RegistrationForm = () => {
       default:
         break;
     }
-
+  
     setErrors(newErrors);
   };
 
@@ -124,7 +124,7 @@ const RegistrationForm = () => {
 
     const isValid = validateFormData();
     if (!isValid) return;
-
+ 
     setIsSubmitting(true);
 
     const emailExists = await checkDuplicateEmail(formData.email);
@@ -135,24 +135,24 @@ const RegistrationForm = () => {
       return;
     }
 
-    if (formData) {
-      try {
-        await registerUser(formData);
-        localStorage.setItem('user', `${formData.email}`);
-
-        setDialogType('success');
-        setDialogOpen(true);
-        navigate("/dashboard");
-      } catch (err) {
-        setDialogType('error');
-        setError(err.response?.data?.message || "An error occurred");
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else {
-      setDialogType('error');
-    }
-
+ if(formData){
+  try {
+    await registerUser(formData);
+    localStorage.setItem('user', `${formData.email}`);
+    
+    setDialogType('success');
+    setDialogOpen(true);
+    navigate("/dashboard");
+  } catch (err) {
+    setDialogType('error');
+    setError(err.response?.data?.message || "An error occurred");
+  } finally {
+    setIsSubmitting(false);
+  }
+ } else {
+  setDialogType('error');
+ }
+   
   };
 
   return (
