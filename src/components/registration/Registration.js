@@ -7,7 +7,6 @@ import Dropdown from "../CommonUI/Dropdown";
 import { checkDuplicateEmail, registerUser } from '../service/authService';
 
 const RegistrationForm = () => {
-  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [formData, setFormData] = useState({

@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Header.css";
 import { useNavigate, Link } from "react-router-dom";
 import Button from "../CommonUI/Button";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [isLoggedin, setIsLoggedin] = useState(false);
 
   const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("authToken");
-    setIsLoggedin(false);
     navigate("/");
   };
 
