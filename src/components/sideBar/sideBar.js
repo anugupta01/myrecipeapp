@@ -18,7 +18,7 @@ const Sidebar = ({ user }) => {
   useEffect(() => {
     const fetchUser = async () => {
       const [email, password] = userData.split(" ");
-      const response = axios.get(`http://localhost:3030/users?email=${email}`)
+      const response = axios.get(`http://localhost:5000/api/users?email=${email}`)
         .then((res) => {
           const userArray = res.data;
           if (userArray.length > 0) {

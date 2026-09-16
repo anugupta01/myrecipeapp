@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Dialog, DialogTitle, DialogActions } from '@mui/material';
 import Input from "../CommonUI/Input";
 import Button from "../CommonUI/Button";
@@ -89,17 +88,6 @@ const RegistrationForm = () => {
       [name]: value
     }));
     validateField(name, value);
-  };
-
-  const checkDuplicateEmail = async (email) => {
-    try {
-      const response = await axios.get("http://localhost:3030/users");
-      const userExists = response.data.some((user) => user.email === email);
-      return userExists;
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      return false;
-    }
   };
 
   const validateFormData = () => {

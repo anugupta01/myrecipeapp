@@ -1,12 +1,11 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api';
-const USERS_URL = 'http://localhost:3030/users';
 
 export const login = async (email, password) => {
   try {
     const response = await axios.post(`${API_URL}/login`, { email, password });
-   console.log("res",response.data);
+    return response.data;
   } catch (error) {
     throw error.response?.data || { alert: 'Login failed' };
   }
@@ -14,7 +13,7 @@ export const login = async (email, password) => {
 
 export const fetchUsers = async () => {
   try {
-    const response = await axios.get(USERS_URL);
+    const response = await axios.get(`${API_URL}/users`);
     return response.data;
   } catch (error) {
     throw error;
@@ -23,7 +22,7 @@ export const fetchUsers = async () => {
 
 export const checkDuplicateEmail = async (email) => {
   try {
-    const response = await axios.get(USERS_URL);
+    const response = await axios.get(`${API_URL}/users`);
     return response.data.some((user) => user.email === email);
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -33,7 +32,7 @@ export const checkDuplicateEmail = async (email) => {
 
 export const registerUser = async (userData) => {
   try {
-    const response = await axios.post(USERS_URL, userData);
+    const response = await axios.post(`${API_URL}/users`, userData);
     return response.data;
   } catch (error) {
     console.error("Error registering user:", error);

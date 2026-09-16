@@ -28,6 +28,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "server": "node server/server.js",
+    "start:all": "concurrently \"npm run server\" \"npm start\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -55,5 +57,6 @@
     "@testing-library/react": "^16.3.3",
     "webpack": "^5.111.0",
     "webpack-cli": "^7.2.3"
+    ,"concurrently": "^9.2.1"
   }
 }
