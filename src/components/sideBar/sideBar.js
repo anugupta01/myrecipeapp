@@ -17,22 +17,18 @@ const Sidebar = ({ user }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const [email, password] = userData.split(" ");
-      const response = axios.get(`http://localhost:5000/api/users?email=${email}`)
-        .then((res) => {
-          const userArray = res.data;
-          if (userArray.length > 0) {
-            setUsers(userArray[0]);
-          }
-        })
-        .catch((error) => {
-          alert("Error fetching user:", error);
-        });
+      try {
+        const response = await axios.get(`http://localhost:5000/api/users?email=${userData}`);
+        const userArray = response.data;
+        if (userArray.length > 0) {
+          setUsers(userArray[0]);
+        }
+      } catch (error) {
+        alert("Error fetching user: " + error.message);
+      }
     };
     fetchUser();
-  }, []);
-
-  useEffect(() => {}, [users]);
+  }, [userData]);
 
   return (
     <div>

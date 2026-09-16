@@ -8,7 +8,6 @@ import { checkDuplicateEmail, registerUser } from '../service/authService';
 
 const RegistrationForm = () => {
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -221,7 +220,6 @@ const RegistrationForm = () => {
       </div>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
       <Dialog
         open={dialogOpen}
         onClose={handleCloseDialog}
