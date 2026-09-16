@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import categoryImage from '../assets/Avocado-Caesar-Green-Beans-finished-400x400.jpg';
@@ -22,7 +22,7 @@ const Dashboard = () => {
 
   // Use a timeout duration of 15 minutes (900000 ms)
   const isTimedOut = useSessionTimeout(1000 * 60 * 15, handleSessionTimeout);
-  const [user, setUser] = useState(null);
+  const user = null;
   const userData = localStorage.getItem("user"); 
 
   const categories = [

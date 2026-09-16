@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/header/Header";
@@ -17,13 +17,6 @@ import PaleoComponent from "./components/recipeDetails/PaleoComponent";
 import CategoryPage from "./components/CategoryPage";
 
 function App() {
-  const [loading, setLoading] = useState(false);
-
-  // Invoking function for fetching users Data on intial page load
-  useEffect(() => {
-    setLoading(true);
-  }, []);
-
   return (
     <div className="main-container">
       <RecipeProvider>
